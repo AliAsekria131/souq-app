@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabaseClient'; // استيراد أداة 
 
 export default function Home() {
   // حالة لتخزين الفئات التي سنجلبها من قاعدة البيانات
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +22,8 @@ export default function Home() {
         }
 
         if (data) {
-          setCategories(data); // تحديث الحالة بالبيانات الجديدة
+         const categoriesData = data as string[]; // أو تحويل مناسب
+         setCategories(categoriesData);
         }
       } catch (error) {
         console.error('Error fetching categories:', error.message);
