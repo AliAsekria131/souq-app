@@ -1,12 +1,11 @@
 // pages/index.js
-'use client'
-
-import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabaseClient'; // استيراد أداة الربط التي أنشأناها
+"use client";
+import { useState, useEffect } from "react";
+import { supabase } from "../../lib/supabaseClient"; // استيراد أداة الربط التي أنشأناها
 
 export default function Home() {
   // حالة لتخزين الفئات التي سنجلبها من قاعدة البيانات
-  const [categories, setCategories] = useState<string[]>([]);
+  const [categories, setCategories] = useState<any[]>([]); // تغيير النوع إلى أي نوع مناسب
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,30 +14,29 @@ export default function Home() {
       try {
         setLoading(true);
         // هذا هو السطر المسؤول عن جلب البيانات من جدول 'categories'
-        const { data, error } = await supabase.from('categories').select('*');
-
+        const { data, error } = await supabase.from("categories").select("*");
         if (error) {
           throw error; // إظهار الخطأ في الكونسول إذا حدث
         }
-
         if (data) {
-         const categoriesData = data as string[]; // أو تحويل مناسب
-         setCategories(categoriesData);
+          setCategories(data); // افتراض أن البيانات تأتي بتنسيق صحيح
         }
       } catch (error) {
-        console.error('Error fetching categories:', error.message);
+        if (error instanceof Error) {
+          console.error("Error fetching categories:", error.message);
+        } else {
+          console.error("Error fetching categories:", error);
+        }
       } finally {
         setLoading(false); // إيقاف مؤشر التحميل
       }
     }
-
     fetchCategories(); // استدعاء الدالة عند تحميل الصفحة
   }, []); // القوسان الفارغان [] يعنيان أن هذا التأثير سيعمل مرة واحدة فقط
 
   return (
-    <div style={{ padding: '50px' }}>
+    <div style={{ padding: "50px" }}>
       <h1>مشروع سوق الإعلانات</h1>
-
       <h2>اختبار الاتصال بقاعدة البيانات:</h2>
       {loading ? (
         <p>جاري التحميل...</p>
